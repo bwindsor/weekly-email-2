@@ -1,11 +1,5 @@
--var org = ((d.organiser_name)?d.organiser_name:"TBC") + ((d.club)?" ("+d.club+")":"");
--if (d.organiser_email) {
+-if (d.club) {
 tr
     td Organiser
-    td #{org}, email 
-        a(href="mailto:"+d.organiser_email) #{d.organiser_email}#{(d.organiser_phone)?', phone'+d.organiser_phone:''}
--} else {
-tr
-    td Organiser
-    td #{org}#{(d.organiser_phone)?', phone'+d.organiser_phone:''}
+    td #{d.club}
 -}

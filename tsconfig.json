@@ -6,7 +6,8 @@
         "target": "es2015",
         "allowJs": true,
         "inlineSourceMap": true,
-        "inlineSources": true
+        "inlineSources": true,
+        "noImplicitAny": true
     },
     "include": [
         "./**/**.ts"

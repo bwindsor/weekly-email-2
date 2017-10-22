@@ -13,6 +13,7 @@
   "devDependencies": {
     "@types/inline-css": "0.0.30",
     "@types/node-fetch": "^1.6.7",
+    "@types/pug": "^2.0.4",
     "pug": "^2.0.0-rc.4",
     "typescript": "^2.5.3"
   },

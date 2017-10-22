@@ -1,0 +1,18 @@
+-function bofUrl(id, type) {
+-   return "https://www.britishorienteering.org.uk/index.php?pg=" + type + "&activity=" + id
+-}
+-function cuocUrl(id) {
+-   return "https://cuoc.soc.srcf.net/calendar/" + id + "/"
+-}
+-if (d.bof_id && d.bof_type) {
+tr
+    td BO Link
+    td
+        a(href=bofUrl(d.bof_id, d.bof_type)) British orienteering website
+-}
+-if (d.cuoc_id) {
+tr
+    td CUOC Link
+    td
+        a(href=cuocUrl(d.cuoc_id)) CUOC website
+-}
