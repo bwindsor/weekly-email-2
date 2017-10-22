@@ -106,7 +106,8 @@ function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
 export default function distribute(toAddress: string, welcome_text?: string[], ) {
 
     fetch("https://cuoc.org.uk/api/calendar/items?type=3").then((res) => res.json()).then((data: CUOCCalendarItem[]) => {
-        let futureData = data.filter(d => getStart(d) > (new Date())).sort(compareCalendarItems).slice(0, 5)
+        let futureData = data.filter(d => getStart(d) > (new Date())).sort(compareCalendarItems)
+        futureData = futureData.slice(0, Math.min(5, futureData.length))
 
         Promise.all(futureData.map(d => fetch(d.uri)))
             .then(res => Promise.all(res.map(r => r.json())))
