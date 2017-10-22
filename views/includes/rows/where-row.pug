@@ -1,0 +1,12 @@
+-if (d.start_lat && d.start_lon) {
+tr
+    td Where
+    td #{d.location_name}: #{((d.address)?d.address:'')} 
+        a(href=googleUrl(d.start_lat, d.start_lon)) Google map
+        | , 
+        a(href=osmUrl(d.start_lat, d.start_lon)) Open Street Map
+-} else {
+tr
+    td Where
+    td #{d.location_name}#{((d.address)?": "+d.address:'')}
+-}

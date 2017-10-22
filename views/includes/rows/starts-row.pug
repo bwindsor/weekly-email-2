@@ -1,0 +1,15 @@
+-function startPhrase(first_start,last_start) {
+    -if (first_start && last_start) {
+        -return "From " + first_start + " to " + last_start;
+    -} else if (first_start) {
+        -return "At " + first_start;
+    -} else if (last_start) {
+        -return "Until " + last_start;
+    -} else {
+        -return "TBC";
+    -}
+-}
+
+tr
+    td Starts
+    td #{startPhrase(d.first_start_time, d.last_start_time)}

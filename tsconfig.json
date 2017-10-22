@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "outDir": "./build/",
+        "alwaysStrict": true,
+        "module": "commonjs",
+        "target": "es2015",
+        "allowJs": true,
+        "inlineSourceMap": true,
+        "inlineSources": true
+    },
+    "include": [
+        "./**/**.ts"
+    ]
+}

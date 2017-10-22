@@ -1,0 +1,14 @@
+-if (d) {
+    
+h2 This week at #{d.location_name}
+p
+    include this-week-details.pug
+h2 Coming up...
+table
+    each d in data
+        tr(class='main-table')
+            td
+                include future-week-details.pug
+-} else {
+h2 No future trainings scheduled
+-}

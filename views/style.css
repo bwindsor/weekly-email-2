@@ -1,0 +1,39 @@
+body {
+    font-family: sans-serif;
+    max-width: 900px;
+    width: 100%;
+}
+h1 {
+    color: darkblue;
+}
+h2 {
+    color: midnightblue;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table.one-week {
+    margin: 0px;
+    border: 2px solid black;
+}
+
+tr:nth-child(odd) {
+    background: lightblue;
+}
+tr.main-table {
+    background: transparent;
+}
+tr.main-table>td {
+    padding-bottom: 1em;
+}
+td {
+    padding: 0px 5px 0px 5px;
+}
+:not(.main-table)>td:first-child {
+    font-weight: bold;
+    width: 100px;
+}
+div.future-week {
+    margin-bottom: 10px;
+}

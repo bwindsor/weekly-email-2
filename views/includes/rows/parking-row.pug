@@ -1,0 +1,15 @@
+-if (d.parking_lat!=null && d.parking_lat!=null) {
+tr
+    td Parking
+    td
+        div
+            a(href=googleUrl(d.parking_lat, d.parking_lon)) Google map
+            | , 
+            a(href=osmUrl(d.parking_lat, d.parking_lon)) Open Street Map
+        div #{(d.parking_info==null)?'':d.parking_info} 
+-} else if (d.parking_info==null || d.parking_info.length==0) {
+-} else {
+tr
+    td Parking
+    td #{d.parking_info}
+-}

@@ -1,0 +1,17 @@
+-function googleUrl(lat,lon){
+    -return "https://www.google.com/maps?q=" + lat.toString() + "," + lon.toString();
+-}
+-function osmUrl(lat,lon){
+    -return "https://www.openstreetmap.org/?mlat=" + lat + "&mlon=" + lon + "&zoom=15&layers=M";
+-}
+-if (!welcome_text) {welcome_text=[]}
+-var d = data.shift();
+html
+    head
+        style
+            include style.css
+    body
+        h1 Cambridge Training Nights
+        each w in welcome_text
+            p #{w}
+        include includes/all-week-details.pug
