@@ -109,6 +109,11 @@ export default function distribute(toAddress: string, welcome_text?: string[], )
         let futureData = data.filter(d => getStart(d) > (new Date())).sort(compareCalendarItems)
         futureData = futureData.slice(0, Math.min(5, futureData.length))
 
+        if (futureData.length == 0) {
+            // If no data available then just return
+            return
+        }
+
         Promise.all(futureData.map(d => fetch(d.uri)))
             .then(res => Promise.all(res.map(r => r.json())))
             .then((data: CUOCCalendarDetail[]) => {
