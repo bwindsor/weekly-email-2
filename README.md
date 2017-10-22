@@ -2,7 +2,7 @@
 This is based on WeeklyEmail, but uses CUOC's API to get the data, therefore there is no front end or web interface for this version, it simply pulls data from CUOC and formats it into the weekly email.
 
 ## Set up from scratch
-1. Clone the repository
+1. `git clone https://github.com/bwindsor/weekly-email-2.git`
 2. `npm install`
 3. Create `credentials.json`, see below
 4. `npm run build`
