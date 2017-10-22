@@ -1,4 +1,4 @@
 import distribute from './distribute'
 import credentials from './credentials'
 
-distribute(credentials.email.productionTo)
+distribute(credentials.email.testTo)

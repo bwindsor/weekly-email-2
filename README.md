@@ -6,7 +6,8 @@ This is based on WeeklyEmail, but uses CUOC's API to get the data, therefore the
 2. `npm install`
 3. Create `credentials.json`, see below
 4. `npm run build`
-5. `npm start`
+5. `npm run send-test` to send a test email
+6. `npm run send-production` to send a production email
 
 ## Credentials
 AWS SES service is used to send the messages. Create a `credentials.json` file in the top level of this project with your credentials, in the same format as the `credentials-template.json` file.
