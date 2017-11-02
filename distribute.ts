@@ -78,7 +78,7 @@ function compareCalendarItems(d1: CUOCCalendarItem, d2: CUOCCalendarItem) {
     return s1.getTime() - s2.getTime()
 }
 function checkForScriptTag(s: string) : boolean {
-    return s.match(/<\s*script.*>/).length != null
+    return s.match(/<\s*script.*>/) != null
 }
 function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
 
