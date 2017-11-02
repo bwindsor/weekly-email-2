@@ -9,6 +9,12 @@ h1 {
 h2 {
     color: midnightblue;
 }
+td>h1, td>h2, td>h3, td>h4 {
+    font-size: inherit
+}
+p {
+    margin: 0px;
+}
 table {
     width: 100%;
     border-collapse: collapse;

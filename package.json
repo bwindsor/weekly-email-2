@@ -4,6 +4,7 @@
   "description": "Weekly Email with uses CUOC's API to get the information",
   "main": "index.js",
   "scripts": {
+    "debug": "node --debug-brk ./build/index.test.js",
     "send-test": "node ./build/index.test.js",
     "send-production": "node ./build/index.js",
     "build": "node_modules/.bin/tsc",

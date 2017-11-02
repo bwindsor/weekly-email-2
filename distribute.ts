@@ -39,6 +39,7 @@ interface CUOCCalendarDetail {
     description: string
     status: string
     bof: CuocBofInfo
+    extra_html: string
 }
 interface TrainingSession {
     date_start: number;
@@ -77,12 +78,13 @@ function compareCalendarItems(d1: CUOCCalendarItem, d2: CUOCCalendarItem) {
     return s1.getTime() - s2.getTime()
 }
 function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
+
     return {
         date_start: extractDate(d.start_date).getTime() / 1000,
         date_end: null,
         location_name: d.location_name,
         address: null,
-        description: d.description,
+        description: d.description + (d.extra_html ? ("<br/>"+d.extra_html) : ""),
         start_lat: d.location_lat,
         start_lon: d.location_lon,
         first_start_time: d.start_time.slice(0, 5),
@@ -97,8 +99,8 @@ function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
         juniors: null,
         cost_adult: null,
         cost_junior: null,
-        bof_id: d.bof.id,
-        bof_type: d.bof.type,
+        bof_id: d.bof ? d.bof.id : null,
+        bof_type: d.bof ? d.bof.type : null,
         cuoc_id: d.calendar_id
     }
 }
@@ -106,7 +108,8 @@ function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
 export default function distribute(toAddress: string, welcome_text?: string[], ) {
 
     fetch("https://cuoc.org.uk/api/calendar/items?type=3").then((res) => res.json()).then((data: CUOCCalendarItem[]) => {
-        let futureData = data.filter(d => getStart(d) > (new Date())).sort(compareCalendarItems)
+        //let futureData = data.filter(d => getStart(d) > (new Date())).sort(compareCalendarItems)
+        let futureData = data.filter(d=>d.calendar_id==4996)
         futureData = futureData.slice(0, Math.min(5, futureData.length))
 
         if (futureData.length == 0) {
