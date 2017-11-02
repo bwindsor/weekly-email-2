@@ -77,6 +77,9 @@ function compareCalendarItems(d1: CUOCCalendarItem, d2: CUOCCalendarItem) {
     let s2 = getStart(d2)
     return s1.getTime() - s2.getTime()
 }
+function checkForScriptTag(s: string) : boolean {
+    return s.match(/<\s*script.*>/).length != null
+}
 function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
 
     return {
@@ -84,7 +87,7 @@ function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
         date_end: null,
         location_name: d.location_name,
         address: null,
-        description: d.description + (d.extra_html ? ("<br/>"+d.extra_html) : ""),
+        description: d.description + ((d.extra_html && !checkForScriptTag(d.extra_html)) ? ("<br/>"+d.extra_html) : ""),
         start_lat: d.location_lat,
         start_lon: d.location_lon,
         first_start_time: d.start_time.slice(0, 5),
