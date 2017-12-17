@@ -65,6 +65,10 @@ interface TrainingSession {
     bof_type: string
     cuoc_id: number
 }
+interface DistributeOptions {
+    welcome_text?: string[]   // Array of paragraphs of custom text to put at the top
+    limitToWeek: boolean      // If true, only send the email if there is data within the next week
+}
 
 function extractDate(s: string) {
     return new Date(s + " 12:00:00")
@@ -77,7 +81,7 @@ function compareCalendarItems(d1: CUOCCalendarItem, d2: CUOCCalendarItem) {
     let s2 = getStart(d2)
     return s1.getTime() - s2.getTime()
 }
-function checkForScriptTag(s: string) : boolean {
+function checkForScriptTag(s: string): boolean {
     return s.match(/<\s*script.*>/) != null
 }
 function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
@@ -87,7 +91,7 @@ function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
         date_end: null,
         location_name: d.location_name,
         address: null,
-        description: d.description + ((d.extra_html && !checkForScriptTag(d.extra_html)) ? ("<br/>"+d.extra_html) : ""),
+        description: d.description + ((d.extra_html && !checkForScriptTag(d.extra_html)) ? ("<br/>" + d.extra_html) : ""),
         start_lat: d.location_lat,
         start_lon: d.location_lon,
         first_start_time: d.start_time.slice(0, 5),
@@ -108,24 +112,50 @@ function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
     }
 }
 
-export default function distribute(toAddress: string, welcome_text?: string[], ) {
+export default async function distribute(toAddress: string, opts: Partial<DistributeOptions>) {
 
-    fetch("https://cuoc.org.uk/api/calendar/items?type=3").then((res) => res.json()).then((data: CUOCCalendarItem[]) => {
-        let futureData = data.filter(d => getStart(d) > (new Date())).sort(compareCalendarItems)
-        futureData = futureData.slice(0, Math.min(5, futureData.length))
+    let res = await fetch("https://cuoc.org.uk/api/calendar/items?type=3")
+    let data: CUOCCalendarItem[] = await res.json()
 
-        if (futureData.length == 0) {
-            // If no data available then just return
+    let futureData = data.filter(d => getStart(d) > (new Date())).sort(compareCalendarItems)
+
+    if (futureData.length == 0) {
+        // If no data available then just return
+        return
+    }
+    
+    let dataToRender: CUOCCalendarDetail[] = [];
+    let numToRender = 5
+    let count = 0;
+    while (dataToRender.length < numToRender) {
+        let next5 = futureData.slice(count*numToRender, Math.min((count+1)*numToRender, futureData.length))
+        if (next5.length == 0) {
+            break
+        } 
+        let res2 = await Promise.all(next5.map(d => fetch(d.uri)))
+        let data2: CUOCCalendarDetail[] = await Promise.all(res2.map(r => r.json()))
+        data2 = data2.filter(d => d.status == "scheduled")
+        for (let i = 0; i < data2.length; i++) {
+            if (dataToRender.length >= numToRender) {
+                break
+            }
+            dataToRender.push(data2[i])
+        }
+        count++
+    }
+    
+
+    // Limit to one week - return if no data
+    if (opts.limitToWeek === true) {
+        let timeNow = (new Date()).getTime() / 1000
+        let midnightTonight = Math.ceil(timeNow / 86400) * 86400
+        if (extractDate(dataToRender[0].start_date) > new Date((midnightTonight + 7 * 86400) * 1000)) {
+            console.log('Email not sent because no data in the coming week')
             return
         }
+    }
 
-        Promise.all(futureData.map(d => fetch(d.uri)))
-            .then(res => Promise.all(res.map(r => r.json())))
-            .then((data: CUOCCalendarDetail[]) => {
-                render(data.map(d => cuocCalendarToTrainingSession(d)), toAddress, welcome_text)
-            })
-            .catch(err => console.log(err))
-    })
+    render(dataToRender.map(d => cuocCalendarToTrainingSession(d)), toAddress, opts.welcome_text)
 }
 
 function render(data: TrainingSession[], toAddress: string, welcome_text: string[]) {
