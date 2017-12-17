@@ -68,6 +68,7 @@ interface TrainingSession {
 interface DistributeOptions {
     welcome_text?: string[]   // Array of paragraphs of custom text to put at the top
     limitToWeek: boolean      // If true, only send the email if there is data within the next week
+    sendDebugInfo: boolean    // If true, an email is always sent containing debug info, even if the weekly email will not be sent.
 }
 
 function extractDate(s: string) {
@@ -121,17 +122,21 @@ export default async function distribute(toAddress: string, opts: Partial<Distri
 
     if (futureData.length == 0) {
         // If no data available then just return
+        if (opts.sendDebugInfo === true) {
+            sendDebug(toAddress, "Email will not be sent because there is no future data.")
+        }
+        console.log('Email not sent because no data available.')
         return
     }
-    
+
     let dataToRender: CUOCCalendarDetail[] = [];
     let numToRender = 5
     let count = 0;
     while (dataToRender.length < numToRender) {
-        let next5 = futureData.slice(count*numToRender, Math.min((count+1)*numToRender, futureData.length))
+        let next5 = futureData.slice(count * numToRender, Math.min((count + 1) * numToRender, futureData.length))
         if (next5.length == 0) {
             break
-        } 
+        }
         let res2 = await Promise.all(next5.map(d => fetch(d.uri)))
         let data2: CUOCCalendarDetail[] = await Promise.all(res2.map(r => r.json()))
         data2 = data2.filter(d => d.status == "scheduled")
@@ -143,19 +148,38 @@ export default async function distribute(toAddress: string, opts: Partial<Distri
         }
         count++
     }
-    
+
 
     // Limit to one week - return if no data
     if (opts.limitToWeek === true) {
         let timeNow = (new Date()).getTime() / 1000
         let midnightTonight = Math.ceil(timeNow / 86400) * 86400
         if (extractDate(dataToRender[0].start_date) > new Date((midnightTonight + 7 * 86400) * 1000)) {
+            if (opts.sendDebugInfo === true) {
+                sendDebug(toAddress, "Email will not be sent because there is no data in the coming week")
+            }
             console.log('Email not sent because no data in the coming week')
             return
         }
     }
 
     render(dataToRender.map(d => cuocCalendarToTrainingSession(d)), toAddress, opts.welcome_text)
+}
+
+function sendDebug(toAddress: string, message: string) {
+    sendMail({
+        from: FROM_ADDRESS,
+        to: toAddress,
+        subject: SUBJECT,
+        text: message,
+        html: message
+    }, (err, info) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("debug email sent")
+        }
+    })
 }
 
 function render(data: TrainingSession[], toAddress: string, welcome_text: string[]) {
