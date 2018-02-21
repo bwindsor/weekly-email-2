@@ -1,10 +1,8 @@
 import * as nodemailer from 'nodemailer'
 import * as AWS from 'aws-sdk'
-import credentials from './credentials'
 
 // configure AWS SDK
-AWS.config.credentials = new AWS.Credentials(credentials.aws.accessKeyId, credentials.aws.secretAccessKey)
-AWS.config.region = credentials.aws.region
+//AWS.config.region = credentials.aws.region
 
 // create Nodemailer SES transporter
 let transporter = nodemailer.createTransport({
@@ -14,8 +12,16 @@ let transporter = nodemailer.createTransport({
 });
 
 // send some mail
-function sendMail(mailOptions: nodemailer.SendMailOptions, done: (err: Error, info: nodemailer.SentMessageInfo)=>void) {
-	transporter.sendMail(mailOptions, done)
+async function sendMail(mailOptions: nodemailer.SendMailOptions) {
+    return new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, (err: Error, info: nodemailer.SentMessageInfo) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(info)
+            }
+        })
+    })
 }
 
 export default sendMail;

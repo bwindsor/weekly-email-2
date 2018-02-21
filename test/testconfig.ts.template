@@ -1,0 +1,2 @@
+export const FROM_ADDRESS = "My Address<myaddress@mydomain.com"
+export const TO_ADDRESS = "List Address<list@lists.com>"

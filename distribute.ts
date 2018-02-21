@@ -2,10 +2,8 @@ import * as pug from "pug"
 import * as inlineCss from "inline-css"
 import sendMail from "./send-mail"
 let createTextVersion = require("textversionjs");
-import credentials from "./credentials"
 import fetch from 'node-fetch'
 
-const FROM_ADDRESS = credentials.email.from;
 const SUBJECT = 'Orienteering This Week';
 
 interface CUOCCalendarItem {
@@ -70,6 +68,10 @@ interface DistributeOptions {
     limitToWeek: boolean      // If true, only send the email if there is data within the next week
     sendDebugInfo: boolean    // If true, an email is always sent containing debug info, even if the weekly email will not be sent.
 }
+interface RenderedData {
+    inlinedHtml: string,
+    html: string
+}
 
 function extractDate(s: string) {
     return new Date(s + " 12:00:00")
@@ -113,7 +115,7 @@ function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
     }
 }
 
-export default async function distribute(toAddress: string, opts: Partial<DistributeOptions>) {
+export default async function distribute(fromAddress: string, toAddress: string, opts: Partial<DistributeOptions>) {
 
     let res = await fetch("https://cuoc.org.uk/api/calendar/items?type=3")
     let data: CUOCCalendarItem[] = await res.json()
@@ -123,7 +125,7 @@ export default async function distribute(toAddress: string, opts: Partial<Distri
     if (futureData.length == 0) {
         // If no data available then just return
         if (opts.sendDebugInfo === true) {
-            sendDebug(toAddress, "Email will not be sent because there is no future data.")
+            await sendDebug(fromAddress, toAddress, "Email will not be sent because there is no future data.")
         }
         console.log('Email not sent because no data available.')
         return
@@ -156,54 +158,47 @@ export default async function distribute(toAddress: string, opts: Partial<Distri
         let midnightTonight = Math.ceil(timeNow / 86400) * 86400
         if (extractDate(dataToRender[0].start_date) > new Date((midnightTonight + 7 * 86400) * 1000)) {
             if (opts.sendDebugInfo === true) {
-                sendDebug(toAddress, "Email will not be sent because there is no data in the coming week")
+                await sendDebug(fromAddress, toAddress, "Email will not be sent because there is no data in the coming week")
             }
             console.log('Email not sent because no data in the coming week')
             return
         }
     }
 
-    render(dataToRender.map(d => cuocCalendarToTrainingSession(d)), toAddress, opts.welcome_text)
+    let {html, inlinedHtml} = await render(dataToRender.map(d => cuocCalendarToTrainingSession(d)), fromAddress, toAddress, opts.welcome_text)
+    
+    let info = await sendMail({
+        from: fromAddress,
+        to: toAddress,
+        subject: SUBJECT,
+        text: createTextVersion(html),
+        html: inlinedHtml
+    })
+    console.log("Main email sent successfully")
 }
 
-function sendDebug(toAddress: string, message: string) {
-    sendMail({
-        from: FROM_ADDRESS,
+async function sendDebug(fromAddress: string, toAddress: string, message: string) {
+    let info = await sendMail({
+        from: fromAddress,
         to: toAddress,
         subject: SUBJECT,
         text: message,
         html: message
-    }, (err, info) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log("debug email sent")
-        }
     })
+    console.log("debug email sent")
 }
 
-function render(data: TrainingSession[], toAddress: string, welcome_text: string[]) {
-    pug.renderFile('./views/weekly-email.pug', { data, welcome_text: (welcome_text) ? welcome_text : [] }, (err, html) => {
-        if (err) {
-            console.log(err)
-        } else {
-            inlineCss(html, { url: ' ' }).then(inlinedHtml => {
-                sendMail({
-                    from: FROM_ADDRESS,
-                    to: toAddress,
-                    subject: SUBJECT,
-                    text: createTextVersion(html),
-                    html: inlinedHtml
-                }, (err, info) => {
-                    if (err) {
-                        console.log(err)
-                    } else {
-                        console.log("success")
-                    }
-                })
-            }).catch(err => {
-                console.log(err)
-            })
-        }
+async function render(data: TrainingSession[], fromAddress: string, toAddress: string, welcome_text: string[]) {
+    return new Promise<RenderedData>((resolve, reject) => {
+        pug.renderFile('./views/weekly-email.pug', { data, welcome_text: (welcome_text) ? welcome_text : [] }, (err, html) => {
+            if (err) {
+                reject(err)
+            } else {
+                inlineCss(html, { url: ' ' })
+                    .then(inlinedHtml => resolve({inlinedHtml: inlinedHtml, html: html}))
+                    .catch(err => reject(err))
+            }
+        })
     })
+
 }

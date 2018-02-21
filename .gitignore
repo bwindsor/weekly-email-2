@@ -1,4 +1,4 @@
-credentials.json
+test/testconfig.ts
 node_modules
 build
 npm-debug.log
