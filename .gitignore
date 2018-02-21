@@ -1,5 +1,10 @@
 test/testconfig.ts
 node_modules
 build
+build-production
+distribute_lambda.zip
 npm-debug.log
 terraform.exe
+terraform.tfstate*
+.terraform
+terraform.tfvars

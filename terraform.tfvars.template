@@ -1,0 +1,6 @@
+profile = "profile-name"
+aws_region = "us-east-1"
+
+from_address = "My Address<myaddress@mydomain.com>"
+to_address_test = "Your Address<youraddress@yourdomain.com>"
+to_address_main_list = "List <listname@lists.com>"

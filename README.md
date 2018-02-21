@@ -15,4 +15,7 @@ This is based on WeeklyEmail, but uses CUOC's API to get the data, therefore the
 
 ### To deploy to AWS
 1. Download [terraform](https://www.terraform.io/)
-2. `terraform apply`
+2. Make sure you have an AWS IAM account with admin permissions on your account so that you can deploy the infrastructure using it, and configure this with the AWS CLI.
+3. `terraform init`
+4. Rename `terraform.tfvars.template` to `terraform.tfvars` and replace the values with your ones
+5. `terraform apply`

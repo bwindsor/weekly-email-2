@@ -8,6 +8,7 @@
     "send-test": "node ./build/test/send-test-message.js",
     "send-production": "node ./build/test/send-production-message.js",
     "build": "node_modules/.bin/tsc",
+    "build-production": "npm run build && (mkdir build-production || echo.) && cd build-production && cp ../package.json . && npm install --production && cp -r ../build/. .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,12 +18,12 @@
     "@types/inline-css": "0.0.30",
     "@types/node-fetch": "^1.6.7",
     "@types/pug": "^2.0.4",
-    "pug": "^2.0.0-rc.4",
-    "typescript": "^2.5.3"
+    "@types/nodemailer": "^4.2.0",
+    "typescript": "^2.5.3",
+    "aws-sdk": "^2.138.0"
   },
   "dependencies": {
-    "@types/nodemailer": "^4.2.0",
-    "aws-sdk": "^2.138.0",
+    "pug": "^2.0.0-rc.4",
     "inline-css": "^2.2.2",
     "node-fetch": "^1.7.3",
     "nodemailer": "^4.2.0",
