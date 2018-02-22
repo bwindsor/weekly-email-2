@@ -21,4 +21,6 @@ This is based on WeeklyEmail, but uses CUOC's API to get the data, therefore the
 3. `terraform init`
 4. Rename `terraform.tfvars.template` to `terraform.tfvars` and replace the values with your ones.
 5. Make sure the email address your are sending from is verified by adding it in the AWS console [here](https://console.aws.amazon.com/ses#verified-senders-email).
-5. `terraform apply`
+5. `npm run deploy`
+
+Note that `npm run deploy` just builds a special `build-production` folder which contains the build and all dependencies required for the lambda function on AWS, and then runs `terraform apply`. You can do these steps separately, for example if you just want to plan, then run `npm run build-production` then `terraform plan`.
