@@ -35,6 +35,7 @@ interface CUOCCalendarDetail {
     item_type_id: number
     modified: string
     description: string
+    lt16ok: boolean
     status: string
     bof: CuocBofInfo
     extra_html: string
@@ -106,7 +107,7 @@ function cuocCalendarToTrainingSession(d: CUOCCalendarDetail): TrainingSession {
         organiser_email: null,
         organiser_phone: null,
         club: d.club,
-        juniors: null,
+        juniors: d.lt16ok,
         cost_adult: null,
         cost_junior: null,
         bof_id: d.bof ? d.bof.id : null,

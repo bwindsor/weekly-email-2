@@ -1,9 +1,6 @@
 import * as nodemailer from 'nodemailer'
 import * as AWS from 'aws-sdk'
 
-// configure AWS SDK
-//AWS.config.region = credentials.aws.region
-
 // create Nodemailer SES transporter
 let transporter = nodemailer.createTransport({
     SES: new AWS.SES({

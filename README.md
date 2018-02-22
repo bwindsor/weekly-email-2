@@ -9,7 +9,9 @@ This is based on WeeklyEmail, but uses CUOC's API to get the data, therefore the
 
 ### To test locally
 1. Make sure you have an AWS IAM account with SES send permissions configured with the AWS CLI
-2. Set environment variable `export AWS_PROFILE=weekly-email`, where `weekly-email` should be replaced by the name of your profile
+2. Set environment variables
+    1. `export AWS_PROFILE=weekly-email`, where `weekly-email` should be replaced by the name of your profile
+    2. `export AWS_REGION=us-east-1` where `us-east-1` should be the AWS region you are using
 3. `npm run send-test` to send a test email
 4. `npm run send-production` to send a production email
 
