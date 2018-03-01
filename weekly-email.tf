@@ -1,3 +1,12 @@
+/* Shared bucket for S3 state storage */
+terraform {
+  backend "s3" {
+    bucket = "weekly-email-terraform-state"
+    key    = "weekly-email-state"
+    region = "us-east-1"
+  }
+}
+
 /*** Variables ***/
 /* For AWS deployment */
 variable "aws_region" {
