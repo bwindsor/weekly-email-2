@@ -4,10 +4,23 @@ This is based on WeeklyEmail, but uses CUOC's API to get the data, therefore the
 ## Set up from scratch
 1. `git clone https://github.com/bwindsor/weekly-email-2.git`
 2. `npm install`
-3. Create `credentials.json`, see below
+3. Rename `test/testconfig.ts.template` to `test/testconfig.ts` and insert your desired from/to addresses.
 4. `npm run build`
-5. `npm run send-test` to send a test email
-6. `npm run send-production` to send a production email
 
-## Credentials
-AWS SES service is used to send the messages. Create a `credentials.json` file in the top level of this project with your credentials, in the same format as the `credentials-template.json` file.
+### To test locally
+1. Make sure you have an AWS IAM account with SES send permissions configured with the AWS CLI
+2. Set environment variables
+    1. `export AWS_PROFILE=weekly-email`, where `weekly-email` should be replaced by the name of your profile
+    2. `export AWS_REGION=us-east-1` where `us-east-1` should be the AWS region you are using
+3. `npm run send-test` to send a test email
+4. `npm run send-production` to send a production email
+
+### To deploy to AWS
+1. Download [terraform](https://www.terraform.io/)
+2. Make sure you have an AWS IAM account with admin permissions on your account so that you can deploy the infrastructure using it, and configure this with the AWS CLI.
+3. `terraform init`
+4. Rename `terraform.tfvars.template` to `terraform.tfvars` and replace the values with your ones.
+5. Make sure the email address your are sending from is verified by adding it in the AWS console [here](https://console.aws.amazon.com/ses#verified-senders-email).
+5. `npm run deploy`
+
+Note that `npm run deploy` just builds a special `build-production` folder which contains the build and all dependencies required for the lambda function on AWS, and then runs `terraform apply`. You can do these steps separately, for example if you just want to plan, then run `npm run build-production` then `terraform plan`.

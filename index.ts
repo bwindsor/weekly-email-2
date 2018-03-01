@@ -1,4 +1,21 @@
 import distribute from './distribute'
-import credentials from './credentials'
+import { Handler, Context, Callback } from 'aws-lambda'
 
-distribute(credentials.email.productionTo, {limitToWeek: true}).catch(err => console.log(err))
+interface HandlerResponse {
+    statusCode: number
+    body: string
+}
+
+export function handler(event: any, context: Context, callback: Callback<HandlerResponse>) {
+    distribute(event.fromAddress, event.toAddress, {
+        limitToWeek: true,
+        sendDebugInfo: event.isTestMessage
+    }).then(() => {
+        callback(undefined, {statusCode: 200, body: ""})
+    })
+    .catch(err => {
+        callback(err, null)
+        console.log(err)
+    });
+    
+}
