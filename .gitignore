@@ -5,6 +5,5 @@ build-production
 distribute_lambda.zip
 npm-debug.log
 terraform.exe
-terraform.tfstate*
 .terraform
 terraform.tfvars
