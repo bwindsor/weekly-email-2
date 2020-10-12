@@ -126,7 +126,7 @@ export default async function distribute(fromAddress: string, toAddress: string,
     if (futureData.length == 0) {
         // If no data available then just return
         if (opts.sendDebugInfo === true) {
-            await sendDebug(fromAddress, toAddress, "Email will not be sent because there is no future data.")
+            await sendDebug(fromAddress, toAddress, "Tomorrow's weekly training email will not be sent because there is no future data in the CUOC calendar.")
         }
         console.log('Email not sent because no data available.')
         return
@@ -159,7 +159,7 @@ export default async function distribute(fromAddress: string, toAddress: string,
         let midnightTonight = Math.ceil(timeNow / 86400) * 86400
         if (extractDate(dataToRender[0].start_date) > new Date((midnightTonight + 7 * 86400) * 1000)) {
             if (opts.sendDebugInfo === true) {
-                await sendDebug(fromAddress, toAddress, "Email will not be sent because there is no data in the coming week")
+                await sendDebug(fromAddress, toAddress, "Tomorrow's weekly training email will not be sent because there is no training scheduled in the CUOC calendar over the next 7 days.")
             }
             console.log('Email not sent because no data in the coming week')
             return
