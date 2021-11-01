@@ -28,7 +28,7 @@
     "pug": "^3.0.1",
     "inline-css": "^2.2.2",
     "node-fetch": "^2.6.1",
-    "nodemailer": "^4.2.0",
+    "nodemailer": "^6.4.16",
     "textversionjs": "^1.0.2"
   }
 }
