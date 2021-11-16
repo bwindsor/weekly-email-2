@@ -22,7 +22,7 @@
     "@types/pug": "^2.0.4",
     "@types/nodemailer": "^4.2.0",
     "typescript": "^2.5.3",
-    "aws-sdk": "^2.138.0"
+    "aws-sdk": "^2.814.0"
   },
   "dependencies": {
     "pug": "^2.0.0-rc.4",
