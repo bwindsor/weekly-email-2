@@ -27,7 +27,7 @@
   "dependencies": {
     "pug": "^2.0.0-rc.4",
     "inline-css": "^2.2.2",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "nodemailer": "^4.2.0",
     "textversionjs": "^1.0.2"
   }
